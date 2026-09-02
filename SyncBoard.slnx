@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SyncBoard.Api/SyncBoard.Api.csproj" />
+  <Project Path="SyncBoard.Application/SyncBoard.Application.csproj" />
+  <Project Path="SyncBoard.Domain/SyncBoard.Domain.csproj" />
+  <Project Path="SyncBoard.Infrastructure/SyncBoard.Infrastructure.csproj" />
+</Solution>

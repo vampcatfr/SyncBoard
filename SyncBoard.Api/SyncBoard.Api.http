@@ -1,0 +1,6 @@
+@SyncBoard.Api_HostAddress = http://localhost:5121
+
+GET {{SyncBoard.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
