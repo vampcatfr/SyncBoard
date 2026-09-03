@@ -1,6 +1,10 @@
-@SyncBoard.Api_HostAddress = http://localhost:5121
+@SyncBoard_Api_HostAddress = https://localhost:7059
 
-GET {{SyncBoard.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{SyncBoard_Api_HostAddress}}/api/boards
+Content-Type: application/json
 
-###
+{
+  "title": "Job Search"
+}
+
+GET http://localhost:5121/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
