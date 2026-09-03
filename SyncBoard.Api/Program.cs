@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SyncBoard.Application.Boards.CreateBoard;
 using SyncBoard.Application.Boards.GetBoardById;
+using SyncBoard.Application.Boards.GetBoards;
 using SyncBoard.Application.Common.Persistence;
 using SyncBoard.Infrastructure.Persistence;
 using SyncBoard.Infrastructure.Persistence.Repositories;
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<CreateBoardHandler>();
 builder.Services.AddScoped<GetBoardByIdHandler>();
+builder.Services.AddScoped<GetBoardsHandler>();
 
 builder.Services.AddControllers();
 

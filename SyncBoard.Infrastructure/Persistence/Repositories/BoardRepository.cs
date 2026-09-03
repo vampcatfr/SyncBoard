@@ -33,4 +33,12 @@ public class BoardRepository : IBoardRepository
                 board => board.Id == id,
                 cancellationToken);
     }
+
+    public async Task<IReadOnlyCollection<Board>> GetAllAsync(
+    CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Boards
+            .OrderByDescending(board => board.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
 }

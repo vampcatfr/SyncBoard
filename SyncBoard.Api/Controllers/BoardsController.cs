@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SyncBoard.Application.Boards.CreateBoard;
 using SyncBoard.Application.Boards.GetBoardById;
+using SyncBoard.Application.Boards.GetBoards;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -10,13 +11,16 @@ public class BoardsController : ControllerBase
 {
     private readonly CreateBoardHandler _createBoardHandler;
     private readonly GetBoardByIdHandler _getBoardByIdHandler;
+    private readonly GetBoardsHandler _getBoardsHandler;
 
     public BoardsController(
         CreateBoardHandler createBoardHandler,
-        GetBoardByIdHandler getBoardByIdHandler)
+        GetBoardByIdHandler getBoardByIdHandler,
+        GetBoardsHandler getBoardsHandler)
     {
         _createBoardHandler = createBoardHandler;
         _getBoardByIdHandler = getBoardByIdHandler;
+        _getBoardsHandler = getBoardsHandler;
     }
 
     [HttpPost]
@@ -48,6 +52,19 @@ public class BoardsController : ControllerBase
         {
             return NotFound();
         }
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyCollection<GetBoardsResult>>> GetAll(
+    CancellationToken cancellationToken)
+    {
+        var query = new GetBoardsQuery();
+
+        var result = await _getBoardsHandler.HandleAsync(
+            query,
+            cancellationToken);
 
         return Ok(result);
     }

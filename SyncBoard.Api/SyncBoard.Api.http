@@ -6,5 +6,10 @@ Content-Type: application/json
 {
   "title": "Job Search"
 }
+###
 
-GET http://localhost:5121/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
+GET {{SyncBoard_Api_HostAddress}}/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
+
+###
+
+GET {{SyncBoard_Api_HostAddress}}/api/boards
