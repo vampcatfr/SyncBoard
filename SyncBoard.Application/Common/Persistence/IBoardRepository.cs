@@ -14,4 +14,7 @@ public interface IBoardRepository
     Task<IReadOnlyCollection<Board>> GetAllAsync(
     CancellationToken cancellationToken = default);
 
+    Task SaveChangesAsync(
+    CancellationToken cancellationToken = default);
+
 }

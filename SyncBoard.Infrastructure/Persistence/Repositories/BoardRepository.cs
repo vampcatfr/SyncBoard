@@ -41,4 +41,10 @@ public class BoardRepository : IBoardRepository
             .OrderByDescending(board => board.CreatedAt)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task SaveChangesAsync(
+    CancellationToken cancellationToken = default)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

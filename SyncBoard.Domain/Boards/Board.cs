@@ -27,4 +27,16 @@ public class Board
         Title = title;
         CreatedAt = DateTimeOffset.UtcNow;
     }
+
+    public void Rename(string newTitle)
+    {
+        if (string.IsNullOrWhiteSpace(newTitle))
+        {
+            throw new ArgumentException(
+                "Board title cannot be empty.",
+                nameof(newTitle));
+        }
+
+        Title = newTitle;
+    }
 }
