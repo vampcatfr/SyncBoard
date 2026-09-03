@@ -7,6 +7,10 @@ using SyncBoard.Infrastructure.Persistence;
 using SyncBoard.Infrastructure.Persistence.Repositories;
 using SyncBoard.Application.Boards.RenameBoard;
 using SyncBoard.Application.Boards.DeleteBoard;
+using SyncBoard.Application.Columns.CreateColumn;
+using SyncBoard.Application.Columns.GetColumnsByBoardId;
+using SyncBoard.Application.Columns.RenameColumn;
+using SyncBoard.Application.Columns.MoveColumn;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +28,12 @@ builder.Services.AddScoped<GetBoardByIdHandler>();
 builder.Services.AddScoped<GetBoardsHandler>();
 builder.Services.AddScoped<RenameBoardHandler>();
 builder.Services.AddScoped<DeleteBoardHandler>();
+
+builder.Services.AddScoped<IColumnRepository, ColumnRepository>();
+builder.Services.AddScoped<CreateColumnHandler>();
+builder.Services.AddScoped<GetColumnsByBoardIdHandler>();
+builder.Services.AddScoped<RenameColumnHandler>();
+builder.Services.AddScoped<MoveColumnHandler>();
 
 builder.Services.AddControllers();
 
