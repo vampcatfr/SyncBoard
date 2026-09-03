@@ -2,6 +2,7 @@
 using SyncBoard.Application.Boards.CreateBoard;
 using SyncBoard.Application.Boards.GetBoardById;
 using SyncBoard.Application.Boards.GetBoards;
+using SyncBoard.Application.Boards.RenameBoard;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -12,15 +13,18 @@ public class BoardsController : ControllerBase
     private readonly CreateBoardHandler _createBoardHandler;
     private readonly GetBoardByIdHandler _getBoardByIdHandler;
     private readonly GetBoardsHandler _getBoardsHandler;
+    private readonly RenameBoardHandler _renameBoardHandler;
 
     public BoardsController(
-        CreateBoardHandler createBoardHandler,
-        GetBoardByIdHandler getBoardByIdHandler,
-        GetBoardsHandler getBoardsHandler)
+    CreateBoardHandler createBoardHandler,
+    GetBoardByIdHandler getBoardByIdHandler,
+    GetBoardsHandler getBoardsHandler,
+    RenameBoardHandler renameBoardHandler)
     {
         _createBoardHandler = createBoardHandler;
         _getBoardByIdHandler = getBoardByIdHandler;
         _getBoardsHandler = getBoardsHandler;
+        _renameBoardHandler = renameBoardHandler;
     }
 
     [HttpPost]
@@ -68,6 +72,29 @@ public class BoardsController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<IActionResult> Rename(
+    Guid id,
+    RenameBoardRequest request,
+    CancellationToken cancellationToken)
+    {
+        var command = new RenameBoardCommand(
+            id,
+            request.Title);
+
+        var renamed = await _renameBoardHandler.HandleAsync(
+            command,
+            cancellationToken);
+
+        if (!renamed)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
 }
 
 public sealed record CreateBoardRequest(string Title);
+public sealed record RenameBoardRequest(string Title);
