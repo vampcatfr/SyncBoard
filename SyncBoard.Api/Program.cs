@@ -6,6 +6,7 @@ using SyncBoard.Application.Common.Persistence;
 using SyncBoard.Infrastructure.Persistence;
 using SyncBoard.Infrastructure.Persistence.Repositories;
 using SyncBoard.Application.Boards.RenameBoard;
+using SyncBoard.Application.Boards.DeleteBoard;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddScoped<CreateBoardHandler>();
 builder.Services.AddScoped<GetBoardByIdHandler>();
 builder.Services.AddScoped<GetBoardsHandler>();
 builder.Services.AddScoped<RenameBoardHandler>();
+builder.Services.AddScoped<DeleteBoardHandler>();
 
 builder.Services.AddControllers();
 

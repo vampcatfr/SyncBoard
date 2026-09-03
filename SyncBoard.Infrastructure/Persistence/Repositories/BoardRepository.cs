@@ -47,4 +47,13 @@ public class BoardRepository : IBoardRepository
     {
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public Task DeleteAsync(
+    Board board,
+    CancellationToken cancellationToken = default)
+    {
+        _dbContext.Boards.Remove(board);
+
+        return _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }
