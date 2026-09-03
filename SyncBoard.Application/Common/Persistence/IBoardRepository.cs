@@ -17,4 +17,7 @@ public interface IBoardRepository
     Task SaveChangesAsync(
     CancellationToken cancellationToken = default);
 
+    Task DeleteAsync(
+    Board board,
+    CancellationToken cancellationToken = default);
 }

@@ -22,3 +22,6 @@ Content-Type: application/json
 {
   "title": "Career Board"
 }
+###
+
+DELETE {{SyncBoard_Api_HostAddress}}/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622

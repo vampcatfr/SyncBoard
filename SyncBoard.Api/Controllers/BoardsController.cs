@@ -3,6 +3,7 @@ using SyncBoard.Application.Boards.CreateBoard;
 using SyncBoard.Application.Boards.GetBoardById;
 using SyncBoard.Application.Boards.GetBoards;
 using SyncBoard.Application.Boards.RenameBoard;
+using SyncBoard.Application.Boards.DeleteBoard;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -14,17 +15,20 @@ public class BoardsController : ControllerBase
     private readonly GetBoardByIdHandler _getBoardByIdHandler;
     private readonly GetBoardsHandler _getBoardsHandler;
     private readonly RenameBoardHandler _renameBoardHandler;
+    private readonly DeleteBoardHandler _deleteBoardHandler;
 
     public BoardsController(
     CreateBoardHandler createBoardHandler,
     GetBoardByIdHandler getBoardByIdHandler,
     GetBoardsHandler getBoardsHandler,
-    RenameBoardHandler renameBoardHandler)
+    RenameBoardHandler renameBoardHandler,
+    DeleteBoardHandler deleteBoardHandler)
     {
         _createBoardHandler = createBoardHandler;
         _getBoardByIdHandler = getBoardByIdHandler;
         _getBoardsHandler = getBoardsHandler;
         _renameBoardHandler = renameBoardHandler;
+        _deleteBoardHandler = deleteBoardHandler;
     }
 
     [HttpPost]
@@ -88,6 +92,25 @@ public class BoardsController : ControllerBase
             cancellationToken);
 
         if (!renamed)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+    Guid id,
+    CancellationToken cancellationToken)
+    {
+        var command = new DeleteBoardCommand(id);
+
+        var deleted = await _deleteBoardHandler.HandleAsync(
+            command,
+            cancellationToken);
+
+        if (!deleted)
         {
             return NotFound();
         }
