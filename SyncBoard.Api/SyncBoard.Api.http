@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 ###
 
-GET {{SyncBoard_Api_HostAddress}}/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
+GET {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c
 
 ###
 
@@ -16,7 +16,7 @@ GET {{SyncBoard_Api_HostAddress}}/api/boards
 
 ###
 
-PATCH {{SyncBoard_Api_HostAddress}}/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
+PATCH {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c
 Content-Type: application/json
 
 {
@@ -24,4 +24,24 @@ Content-Type: application/json
 }
 ###
 
-DELETE {{SyncBoard_Api_HostAddress}}/api/boards/9155ac15-d42f-4cb9-bca9-8361a946d622
+DELETE {{SyncBoard_Api_HostAddress}}/api/boards/2418befe-d7a9-479b-99a5-a7211838b24e
+###
+
+POST {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c/columns
+Content-Type: application/json
+
+{
+  "title": "Backlog",
+  "position": 0
+}
+###
+
+GET {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c/columns
+###
+
+PATCH {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c/columns/dee6ff57-f58a-4e34-9089-87925ddf3d1e/position
+Content-Type: application/json
+
+{
+  "position": 2
+}

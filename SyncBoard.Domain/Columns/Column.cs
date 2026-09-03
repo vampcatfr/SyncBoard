@@ -46,4 +46,25 @@ public class Column
         Title = title;
         Position = position;
     }
+    public void Rename(string newTitle)
+    {
+        if (string.IsNullOrWhiteSpace(newTitle))
+        {
+            throw new ArgumentException(
+                "Column title cannot be empty.",
+                nameof(newTitle));
+        }
+
+        Title = newTitle;
+    }
+    public void MoveTo(int newPosition)
+    {
+        if (newPosition < 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(newPosition));
+        }
+
+        Position = newPosition;
+    }
 }
