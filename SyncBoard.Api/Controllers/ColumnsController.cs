@@ -3,6 +3,7 @@ using SyncBoard.Application.Columns.CreateColumn;
 using SyncBoard.Application.Columns.GetColumnsByBoardId;
 using SyncBoard.Application.Columns.RenameColumn;
 using SyncBoard.Application.Columns.MoveColumn;
+using SyncBoard.Application.Columns.DeleteColumn;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -14,13 +15,15 @@ public class ColumnsController : ControllerBase
     private readonly GetColumnsByBoardIdHandler _getColumnsByBoardIdHandler;
     private readonly RenameColumnHandler _renameColumnHandler;
     private readonly MoveColumnHandler _moveColumnHandler;
+    private readonly DeleteColumnHandler _deleteColumnHandler;
 
-    public ColumnsController(CreateColumnHandler createColumnHandler, GetColumnsByBoardIdHandler getColumnsByBoardIdHandler, RenameColumnHandler renameColumnHandler, MoveColumnHandler moveColumnHandler)
+    public ColumnsController(CreateColumnHandler createColumnHandler, GetColumnsByBoardIdHandler getColumnsByBoardIdHandler, RenameColumnHandler renameColumnHandler, MoveColumnHandler moveColumnHandler, DeleteColumnHandler deleteColumnHandler)
     {
         _createColumnHandler = createColumnHandler;
         _getColumnsByBoardIdHandler = getColumnsByBoardIdHandler;
         _renameColumnHandler = renameColumnHandler;
         _moveColumnHandler = moveColumnHandler;
+            _deleteColumnHandler = deleteColumnHandler;
     }
 
     [HttpPost]
@@ -108,6 +111,28 @@ public class ColumnsController : ControllerBase
             cancellationToken);
 
         if (!moved)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+    
+    [HttpDelete("{columnId:guid}")]
+    public async Task<IActionResult> Delete(
+    Guid boardId,
+    Guid columnId,
+    CancellationToken cancellationToken)
+    {
+        var command = new DeleteColumnCommand(
+            boardId,
+            columnId);
+
+        var deleted = await _deleteColumnHandler.HandleAsync(
+            command,
+            cancellationToken);
+
+        if (!deleted)
         {
             return NotFound();
         }

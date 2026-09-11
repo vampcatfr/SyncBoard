@@ -10,8 +10,4 @@
     <ProjectReference Include="..\SyncBoard.Domain\SyncBoard.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Cards\" />
-  </ItemGroup>
-
 </Project>

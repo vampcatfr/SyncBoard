@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Domain.Columns;
+using SyncBoard.Domain.Common.Exceptions;
 
 namespace SyncBoard.Domain.Boards;
 
@@ -18,9 +19,8 @@ public class Board
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            throw new ArgumentException(
-                "Board title cannot be empty.",
-                nameof(title));
+            throw new DomainValidationException(
+                "Board title cannot be empty.");
         }
 
         Id = Guid.NewGuid();
@@ -32,9 +32,8 @@ public class Board
     {
         if (string.IsNullOrWhiteSpace(newTitle))
         {
-            throw new ArgumentException(
-                "Board title cannot be empty.",
-                nameof(newTitle));
+            throw new DomainValidationException(
+                "Board title cannot be empty.");
         }
 
         Title = newTitle;

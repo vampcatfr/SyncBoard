@@ -1,5 +1,6 @@
 ﻿using SyncBoard.Domain.Boards;
 using SyncBoard.Domain.Cards;
+using SyncBoard.Domain.Common.Exceptions;
 
 namespace SyncBoard.Domain.Columns;
 
@@ -23,22 +24,20 @@ public class Column
     {
         if (boardId == Guid.Empty)
         {
-            throw new ArgumentException(
-                "Board id is required.",
-                nameof(boardId));
+            throw new DomainValidationException(
+                "Board id is required.");
         }
 
         if (string.IsNullOrWhiteSpace(title))
         {
-            throw new ArgumentException(
-                "Column title cannot be empty.",
-                nameof(title));
+            throw new DomainValidationException(
+                "Column title cannot be empty.");
         }
 
         if (position < 0)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(position));
+            throw new DomainValidationException(
+                "Column position cannot be negative.");
         }
 
         Id = Guid.NewGuid();
@@ -46,23 +45,24 @@ public class Column
         Title = title;
         Position = position;
     }
+
     public void Rename(string newTitle)
     {
         if (string.IsNullOrWhiteSpace(newTitle))
         {
-            throw new ArgumentException(
-                "Column title cannot be empty.",
-                nameof(newTitle));
+            throw new DomainValidationException(
+                "Column title cannot be empty.");
         }
 
         Title = newTitle;
     }
+
     public void MoveTo(int newPosition)
     {
         if (newPosition < 0)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(newPosition));
+            throw new DomainValidationException(
+                "Column position cannot be negative.");
         }
 
         Position = newPosition;

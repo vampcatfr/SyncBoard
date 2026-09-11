@@ -1,5 +1,5 @@
-﻿
-using SyncBoard.Domain.Columns;
+﻿using SyncBoard.Domain.Columns;
+using SyncBoard.Domain.Common.Exceptions;
 
 namespace SyncBoard.Domain.Cards;
 
@@ -17,22 +17,20 @@ public class Card
     {
         if (columnId == Guid.Empty)
         {
-            throw new ArgumentException(
-                "Column id is required.",
-                nameof(columnId));
+            throw new DomainValidationException(
+                "Column id is required.");
         }
 
         if (string.IsNullOrWhiteSpace(title))
         {
-            throw new ArgumentException(
-                "Card title cannot be empty.",
-                nameof(title));
+            throw new DomainValidationException(
+                "Card title cannot be empty.");
         }
 
         if (position < 0)
         {
-            throw new ArgumentOutOfRangeException(
-                nameof(position));
+            throw new DomainValidationException(
+                "Card position cannot be negative.");
         }
 
         Id = Guid.NewGuid();
@@ -40,5 +38,36 @@ public class Card
         Title = title;
         Position = position;
         CreatedAt = DateTimeOffset.UtcNow;
+    }
+
+    public void Rename(string newTitle)
+    {
+        if (string.IsNullOrWhiteSpace(newTitle))
+        {
+            throw new DomainValidationException(
+                "Card title cannot be empty.");
+        }
+
+        Title = newTitle;
+    }
+
+    public void MoveTo(
+        Guid newColumnId,
+        int newPosition)
+    {
+        if (newColumnId == Guid.Empty)
+        {
+            throw new DomainValidationException(
+                "Column id is required.");
+        }
+
+        if (newPosition < 0)
+        {
+            throw new DomainValidationException(
+                "Card position cannot be negative.");
+        }
+
+        ColumnId = newColumnId;
+        Position = newPosition;
     }
 }
