@@ -17,4 +17,7 @@ public interface IColumnRepository
     Task<IReadOnlyCollection<Column>> GetByBoardIdAsync(
     Guid boardId,
     CancellationToken cancellationToken = default);
+    Task DeleteAsync(
+    Column column,
+    CancellationToken cancellationToken = default);
 }

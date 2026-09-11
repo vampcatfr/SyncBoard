@@ -16,7 +16,7 @@ GET {{SyncBoard_Api_HostAddress}}/api/boards
 
 ###
 
-PATCH {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c
+PATCH {{SyncBoard_Api_HostAddress}}/api/boards/b777b891-6d1b-4792-9820-5673f9dd0604
 Content-Type: application/json
 
 {
@@ -27,7 +27,7 @@ Content-Type: application/json
 DELETE {{SyncBoard_Api_HostAddress}}/api/boards/2418befe-d7a9-479b-99a5-a7211838b24e
 ###
 
-POST {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c/columns
+POST {{SyncBoard_Api_HostAddress}}/api/boards/b777b891-6d1b-4792-9820-5673f9dd0604/columns
 Content-Type: application/json
 
 {
@@ -44,4 +44,50 @@ Content-Type: application/json
 
 {
   "position": 2
+}
+###
+
+DELETE {{SyncBoard_Api_HostAddress}}/api/boards/c6bb5033-d5d7-4dbc-96b1-71e6753e252c/columns/dee6ff57-f58a-4e34-9089-87925ddf3d1e
+###
+
+POST {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards
+Content-Type: application/json
+
+{
+  "title": "Prepare CV",
+  "position": 0
+}
+###
+
+GET {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards
+
+###
+
+PATCH {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards/7c9aa4c9-d999-4607-a184-562b8860f130
+Content-Type: application/json
+
+{
+  "title": "Update CV"
+}
+
+###
+
+PATCH {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards/7c9aa4c9-d999-4607-a184-562b8860f130/move
+Content-Type: application/json
+
+{
+  "targetColumnId": "aae84116-748a-4e8c-b685-fd669feb1f87",
+  "position": 1
+}
+
+###
+
+DELETE {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards/7c9aa4c9-d999-4607-a184-562b8860f130
+
+###
+PATCH {{SyncBoard_Api_HostAddress}}/api/columns/aae84116-748a-4e8c-b685-fd669feb1f87/cards/c0da5585-474a-42d6-b97c-507ffd28fece
+Content-Type: application/json
+
+{
+  "title": ""
 }

@@ -45,8 +45,18 @@ public class ColumnRepository : IColumnRepository
     CancellationToken cancellationToken = default)
     {
         return await _dbContext.Columns
+            .AsNoTracking()
             .Where(column => column.BoardId == boardId)
             .OrderBy(column => column.Position)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task DeleteAsync(
+    Column column,
+    CancellationToken cancellationToken = default)
+    {
+        _dbContext.Columns.Remove(column);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
