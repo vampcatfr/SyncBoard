@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="SyncBoard.Api/SyncBoard.Api.csproj" />
+  <Project Path="SyncBoard.Application.Tests/SyncBoard.Application.Tests.csproj" Id="5dc134d3-6e58-4238-a176-19ae8b153f5a" />
   <Project Path="SyncBoard.Application/SyncBoard.Application.csproj" />
   <Project Path="SyncBoard.Domain/SyncBoard.Domain.csproj" />
   <Project Path="SyncBoard.Infrastructure/SyncBoard.Infrastructure.csproj" />

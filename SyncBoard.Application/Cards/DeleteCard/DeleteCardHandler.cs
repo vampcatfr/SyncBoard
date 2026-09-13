@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Cards.DeleteCard;
 
@@ -11,7 +12,7 @@ public class DeleteCardHandler
         _cardRepository = cardRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         DeleteCardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,18 +22,18 @@ public class DeleteCardHandler
 
         if (card is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (card.ColumnId != command.ColumnId)
         {
-            return false;
+            return Result.NotFound();
         }
 
         await _cardRepository.DeleteAsync(
             card,
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

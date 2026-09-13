@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Cards.RenameCard;
 
@@ -11,7 +12,7 @@ public class RenameCardHandler
         _cardRepository = cardRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         RenameCardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,12 +22,12 @@ public class RenameCardHandler
 
         if (card is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (card.ColumnId != command.ColumnId)
         {
-            return false;
+            return Result.NotFound();
         }
 
         card.Rename(command.NewTitle);
@@ -34,6 +35,6 @@ public class RenameCardHandler
         await _cardRepository.SaveChangesAsync(
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

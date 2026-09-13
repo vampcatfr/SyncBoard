@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Cards.MoveCard;
 
@@ -15,7 +16,7 @@ public class MoveCardHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         MoveCardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -25,12 +26,12 @@ public class MoveCardHandler
 
         if (card is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (card.ColumnId != command.SourceColumnId)
         {
-            return false;
+            return Result.NotFound();
         }
 
         var sourceColumn = await _columnRepository.GetByIdAsync(
@@ -39,28 +40,28 @@ public class MoveCardHandler
 
         if (sourceColumn is null)
         {
-            return false;
+            return Result.NotFound();
         }
-        
+
         var targetColumn = await _columnRepository.GetByIdAsync(
             command.TargetColumnId,
             cancellationToken);
 
         if (targetColumn is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (sourceColumn.BoardId != targetColumn.BoardId)
         {
-            return false;
+            return Result.Conflict();
         }
-        
+
         if (command.NewPosition < 0)
         {
-            return false;
+            return Result.ValidationError();
         }
-        
+
         if (command.SourceColumnId == command.TargetColumnId)
         {
             var cards = (await _cardRepository.GetByColumnIdForUpdateAsync(
@@ -119,6 +120,6 @@ public class MoveCardHandler
         await _cardRepository.SaveChangesAsync(
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

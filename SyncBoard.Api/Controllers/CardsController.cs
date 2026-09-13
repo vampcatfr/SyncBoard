@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SyncBoard.Application.Cards.CreateCard;
-using SyncBoard.Application.Cards.GetCardsByColumnId;
-using SyncBoard.Application.Cards.RenameCard;
-using SyncBoard.Application.Cards.MoveCard;
 using SyncBoard.Application.Cards.DeleteCard;
+using SyncBoard.Application.Cards.GetCardsByColumnId;
+using SyncBoard.Application.Cards.MoveCard;
+using SyncBoard.Application.Cards.RenameCard;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -87,11 +88,11 @@ public class CardsController : ControllerBase
             cardId,
             request.Title);
 
-        var renamed = await _renameCardHandler.HandleAsync(
+        var result = await _renameCardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!renamed)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
@@ -112,13 +113,23 @@ public class CardsController : ControllerBase
             request.TargetColumnId,
             request.Position);
 
-        var moved = await _moveCardHandler.HandleAsync(
+        var result = await _moveCardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!moved)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
+        }
+
+        if (result.Status == ResultStatus.ValidationError)
+        {
+            return BadRequest();
+        }
+
+        if (result.Status == ResultStatus.Conflict)
+        {
+            return Conflict();
         }
 
         return NoContent();
@@ -134,11 +145,11 @@ public class CardsController : ControllerBase
             columnId,
             cardId);
 
-        var deleted = await _deleteCardHandler.HandleAsync(
+        var result = await _deleteCardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!deleted)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
