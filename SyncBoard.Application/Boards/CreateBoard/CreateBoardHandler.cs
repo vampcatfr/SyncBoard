@@ -1,5 +1,6 @@
 ﻿using SyncBoard.Application.Common.Persistence;
 using SyncBoard.Domain.Boards;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Boards.CreateBoard;
 
@@ -12,7 +13,7 @@ public class CreateBoardHandler
         _boardRepository = boardRepository;
     }
 
-    public async Task<Guid> HandleAsync(
+    public async Task<Result<Guid>> HandleAsync(
         CreateBoardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -22,6 +23,6 @@ public class CreateBoardHandler
             board,
             cancellationToken);
 
-        return board.Id;
+        return Result<Guid>.Success(board.Id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Columns.MoveColumn;
 
@@ -11,7 +12,7 @@ public class MoveColumnHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         MoveColumnCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,12 +22,17 @@ public class MoveColumnHandler
 
         if (column is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (column.BoardId != command.BoardId)
         {
-            return false;
+            return Result.NotFound();
+        }
+
+        if (command.NewPosition < 0)
+        {
+            return Result.ValidationError();
         }
 
         column.MoveTo(command.NewPosition);
@@ -34,6 +40,6 @@ public class MoveColumnHandler
         await _columnRepository.SaveChangesAsync(
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

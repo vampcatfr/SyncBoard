@@ -1,5 +1,6 @@
 ﻿using SyncBoard.Application.Common.Persistence;
 using SyncBoard.Domain.Cards;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Cards.CreateCard;
 
@@ -16,7 +17,7 @@ public class CreateCardHandler
         _cardRepository = cardRepository;
     }
 
-    public async Task<Guid?> HandleAsync(
+    public async Task<Result<Guid>> HandleAsync(
         CreateCardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -26,7 +27,7 @@ public class CreateCardHandler
 
         if (column is null)
         {
-            return null;
+            return Result<Guid>.NotFound();
         }
 
         var card = new Card(
@@ -38,6 +39,6 @@ public class CreateCardHandler
             card,
             cancellationToken);
 
-        return card.Id;
+        return Result<Guid>.Success(card.Id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Boards.GetBoardById;
 
@@ -11,7 +12,7 @@ public class GetBoardByIdHandler
         _boardRepository = boardRepository;
     }
 
-    public async Task<GetBoardByIdResult?> HandleAsync(
+    public async Task<Result<GetBoardByIdResult>> HandleAsync(
         GetBoardByIdQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -21,12 +22,14 @@ public class GetBoardByIdHandler
 
         if (board is null)
         {
-            return null;
+            return Result<GetBoardByIdResult>.NotFound();
         }
 
-        return new GetBoardByIdResult(
+        var result = new GetBoardByIdResult(
             board.Id,
             board.Title,
             board.CreatedAt);
+
+        return Result<GetBoardByIdResult>.Success(result);
     }
 }

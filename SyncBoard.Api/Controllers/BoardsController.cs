@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SyncBoard.Application.Boards.CreateBoard;
+using SyncBoard.Application.Boards.DeleteBoard;
 using SyncBoard.Application.Boards.GetBoardById;
 using SyncBoard.Application.Boards.GetBoards;
 using SyncBoard.Application.Boards.RenameBoard;
-using SyncBoard.Application.Boards.DeleteBoard;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -18,11 +19,11 @@ public class BoardsController : ControllerBase
     private readonly DeleteBoardHandler _deleteBoardHandler;
 
     public BoardsController(
-    CreateBoardHandler createBoardHandler,
-    GetBoardByIdHandler getBoardByIdHandler,
-    GetBoardsHandler getBoardsHandler,
-    RenameBoardHandler renameBoardHandler,
-    DeleteBoardHandler deleteBoardHandler)
+        CreateBoardHandler createBoardHandler,
+        GetBoardByIdHandler getBoardByIdHandler,
+        GetBoardsHandler getBoardsHandler,
+        RenameBoardHandler renameBoardHandler,
+        DeleteBoardHandler deleteBoardHandler)
     {
         _createBoardHandler = createBoardHandler;
         _getBoardByIdHandler = getBoardByIdHandler;
@@ -36,13 +37,16 @@ public class BoardsController : ControllerBase
         CreateBoardRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateBoardCommand(request.Title);
+        var command = new CreateBoardCommand(
+            request.Title);
 
-        var boardId = await _createBoardHandler.HandleAsync(
+        var result = await _createBoardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        return Created($"/api/boards/{boardId}", boardId);
+        return Created(
+            $"/api/boards/{result.Value}",
+            result.Value);
     }
 
     [HttpGet("{id:guid}")]
@@ -56,17 +60,17 @@ public class BoardsController : ControllerBase
             query,
             cancellationToken);
 
-        if (result is null)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<GetBoardsResult>>> GetAll(
-    CancellationToken cancellationToken)
+        CancellationToken cancellationToken)
     {
         var query = new GetBoardsQuery();
 
@@ -74,24 +78,24 @@ public class BoardsController : ControllerBase
             query,
             cancellationToken);
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> Rename(
-    Guid id,
-    RenameBoardRequest request,
-    CancellationToken cancellationToken)
+        Guid id,
+        RenameBoardRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new RenameBoardCommand(
             id,
             request.Title);
 
-        var renamed = await _renameBoardHandler.HandleAsync(
+        var result = await _renameBoardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!renamed)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
@@ -101,16 +105,16 @@ public class BoardsController : ControllerBase
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
-    Guid id,
-    CancellationToken cancellationToken)
+        Guid id,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteBoardCommand(id);
 
-        var deleted = await _deleteBoardHandler.HandleAsync(
+        var result = await _deleteBoardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!deleted)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
@@ -119,5 +123,8 @@ public class BoardsController : ControllerBase
     }
 }
 
-public sealed record CreateBoardRequest(string Title);
-public sealed record RenameBoardRequest(string Title);
+public sealed record CreateBoardRequest(
+    string Title);
+
+public sealed record RenameBoardRequest(
+    string Title);

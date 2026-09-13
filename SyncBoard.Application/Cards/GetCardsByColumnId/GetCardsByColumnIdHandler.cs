@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Cards.GetCardsByColumnId;
 
@@ -15,7 +16,7 @@ public class GetCardsByColumnIdHandler
         _cardRepository = cardRepository;
     }
 
-    public async Task<IReadOnlyCollection<GetCardsByColumnIdResult>?> HandleAsync(
+    public async Task<Result<IReadOnlyCollection<GetCardsByColumnIdResult>>> HandleAsync(
         GetCardsByColumnIdQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -25,14 +26,15 @@ public class GetCardsByColumnIdHandler
 
         if (column is null)
         {
-            return null;
+            return Result<IReadOnlyCollection<GetCardsByColumnIdResult>>
+                .NotFound();
         }
 
         var cards = await _cardRepository.GetByColumnIdAsync(
             query.ColumnId,
             cancellationToken);
 
-        return cards
+        var result = cards
             .Select(card => new GetCardsByColumnIdResult(
                 card.Id,
                 card.Title,
@@ -40,5 +42,8 @@ public class GetCardsByColumnIdHandler
                 card.Position,
                 card.CreatedAt))
             .ToList();
+
+        return Result<IReadOnlyCollection<GetCardsByColumnIdResult>>
+            .Success(result);
     }
 }

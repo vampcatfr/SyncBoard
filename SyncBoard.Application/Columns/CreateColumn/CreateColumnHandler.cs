@@ -1,5 +1,6 @@
 ﻿using SyncBoard.Application.Common.Persistence;
 using SyncBoard.Domain.Columns;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Columns.CreateColumn;
 
@@ -16,7 +17,7 @@ public class CreateColumnHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<Guid?> HandleAsync(
+    public async Task<Result<Guid>> HandleAsync(
         CreateColumnCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -26,7 +27,7 @@ public class CreateColumnHandler
 
         if (board is null)
         {
-            return null;
+            return Result<Guid>.NotFound();
         }
 
         var column = new Column(
@@ -38,6 +39,6 @@ public class CreateColumnHandler
             column,
             cancellationToken);
 
-        return column.Id;
+        return Result<Guid>.Success(column.Id);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Boards.RenameBoard;
 
@@ -11,7 +12,7 @@ public class RenameBoardHandler
         _boardRepository = boardRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         RenameBoardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,7 +22,7 @@ public class RenameBoardHandler
 
         if (board is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         board.Rename(command.NewTitle);
@@ -29,6 +30,6 @@ public class RenameBoardHandler
         await _boardRepository.SaveChangesAsync(
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

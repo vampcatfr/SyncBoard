@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Columns.DeleteColumn;
 
@@ -11,7 +12,7 @@ public class DeleteColumnHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         DeleteColumnCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,18 +22,18 @@ public class DeleteColumnHandler
 
         if (column is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (column.BoardId != command.BoardId)
         {
-            return false;
+            return Result.NotFound();
         }
 
         await _columnRepository.DeleteAsync(
             column,
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

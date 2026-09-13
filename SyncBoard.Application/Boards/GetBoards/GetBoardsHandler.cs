@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Boards.GetBoards;
 
@@ -11,18 +12,21 @@ public class GetBoardsHandler
         _boardRepository = boardRepository;
     }
 
-    public async Task<IReadOnlyCollection<GetBoardsResult>> HandleAsync(
+    public async Task<Result<IReadOnlyCollection<GetBoardsResult>>> HandleAsync(
         GetBoardsQuery query,
         CancellationToken cancellationToken = default)
     {
         var boards = await _boardRepository.GetAllAsync(
             cancellationToken);
 
-        return boards
+        var result = boards
             .Select(board => new GetBoardsResult(
                 board.Id,
                 board.Title,
                 board.CreatedAt))
             .ToList();
+
+        return Result<IReadOnlyCollection<GetBoardsResult>>
+            .Success(result);
     }
 }

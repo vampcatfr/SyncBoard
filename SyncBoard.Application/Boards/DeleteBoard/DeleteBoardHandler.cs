@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Boards.DeleteBoard;
 
@@ -11,7 +12,7 @@ public class DeleteBoardHandler
         _boardRepository = boardRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         DeleteBoardCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,13 +22,13 @@ public class DeleteBoardHandler
 
         if (board is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         await _boardRepository.DeleteAsync(
             board,
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

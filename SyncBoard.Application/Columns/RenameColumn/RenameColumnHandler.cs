@@ -1,4 +1,5 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Application.Columns.RenameColumn;
 
@@ -11,7 +12,7 @@ public class RenameColumnHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<bool> HandleAsync(
+    public async Task<Result> HandleAsync(
         RenameColumnCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -21,12 +22,13 @@ public class RenameColumnHandler
 
         if (column is null)
         {
-            return false;
+            return Result.NotFound();
         }
 
         if (column.BoardId != command.BoardId)
         {
-            return false;
+            return Result.NotFound();
+
         }
 
         column.Rename(command.NewTitle);
@@ -34,6 +36,6 @@ public class RenameColumnHandler
         await _columnRepository.SaveChangesAsync(
             cancellationToken);
 
-        return true;
+        return Result.Success();
     }
 }

@@ -1,4 +1,6 @@
 ﻿using SyncBoard.Application.Common.Persistence;
+using SyncBoard.Application.Common.Results;
+
 
 namespace SyncBoard.Application.Columns.GetColumnsByBoardId;
 
@@ -15,7 +17,7 @@ public class GetColumnsByBoardIdHandler
         _columnRepository = columnRepository;
     }
 
-    public async Task<IReadOnlyCollection<GetColumnsByBoardIdResult>?> HandleAsync(
+    public async Task<Result<IReadOnlyCollection<GetColumnsByBoardIdResult>>> HandleAsync(
         GetColumnsByBoardIdQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -25,18 +27,22 @@ public class GetColumnsByBoardIdHandler
 
         if (board is null)
         {
-            return null;
+            return Result<IReadOnlyCollection<GetColumnsByBoardIdResult>>
+                .NotFound();
         }
 
         var columns = await _columnRepository.GetByBoardIdAsync(
             query.BoardId,
             cancellationToken);
 
-        return columns
+        var result = columns
             .Select(column => new GetColumnsByBoardIdResult(
                 column.Id,
                 column.Title,
                 column.Position))
             .ToList();
+
+        return Result<IReadOnlyCollection<GetColumnsByBoardIdResult>>
+            .Success(result);
     }
 }

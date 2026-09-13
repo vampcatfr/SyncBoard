@@ -43,18 +43,18 @@ public class CardsController : ControllerBase
             request.Title,
             request.Position);
 
-        var cardId = await _createCardHandler.HandleAsync(
+        var result = await _createCardHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (cardId is null)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
 
         return Created(
-            $"/api/columns/{columnId}/cards/{cardId}",
-            cardId);
+            $"/api/columns/{columnId}/cards/{result.Value}",
+            result.Value);
     }
 
     [HttpGet]
@@ -64,16 +64,16 @@ public class CardsController : ControllerBase
     {
         var query = new GetCardsByColumnIdQuery(columnId);
 
-        var cards = await _getCardsByColumnIdHandler.HandleAsync(
+        var result = await _getCardsByColumnIdHandler.HandleAsync(
             query,
             cancellationToken);
 
-        if (cards is null)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
 
-        return Ok(cards);
+        return Ok(result.Value);
     }
 
     [HttpPatch("{cardId:guid}")]

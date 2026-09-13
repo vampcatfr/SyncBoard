@@ -4,6 +4,7 @@ using SyncBoard.Application.Columns.GetColumnsByBoardId;
 using SyncBoard.Application.Columns.RenameColumn;
 using SyncBoard.Application.Columns.MoveColumn;
 using SyncBoard.Application.Columns.DeleteColumn;
+using SyncBoard.Application.Common.Results;
 
 namespace SyncBoard.Api.Controllers;
 
@@ -17,13 +18,18 @@ public class ColumnsController : ControllerBase
     private readonly MoveColumnHandler _moveColumnHandler;
     private readonly DeleteColumnHandler _deleteColumnHandler;
 
-    public ColumnsController(CreateColumnHandler createColumnHandler, GetColumnsByBoardIdHandler getColumnsByBoardIdHandler, RenameColumnHandler renameColumnHandler, MoveColumnHandler moveColumnHandler, DeleteColumnHandler deleteColumnHandler)
+    public ColumnsController(
+        CreateColumnHandler createColumnHandler, 
+        GetColumnsByBoardIdHandler getColumnsByBoardIdHandler, 
+        RenameColumnHandler renameColumnHandler, 
+        MoveColumnHandler moveColumnHandler, 
+        DeleteColumnHandler deleteColumnHandler)
     {
         _createColumnHandler = createColumnHandler;
         _getColumnsByBoardIdHandler = getColumnsByBoardIdHandler;
         _renameColumnHandler = renameColumnHandler;
         _moveColumnHandler = moveColumnHandler;
-            _deleteColumnHandler = deleteColumnHandler;
+        _deleteColumnHandler = deleteColumnHandler;
     }
 
     [HttpPost]
@@ -37,18 +43,18 @@ public class ColumnsController : ControllerBase
             request.Title,
             request.Position);
 
-        var columnId = await _createColumnHandler.HandleAsync(
+        var result = await _createColumnHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (columnId is null)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
 
         return Created(
-            $"/api/boards/{boardId}/columns/{columnId}",
-            columnId);
+            $"/api/boards/{boardId}/columns/{result.Value}",
+            result.Value);
     }
 
     [HttpGet]
@@ -62,12 +68,12 @@ public class ColumnsController : ControllerBase
             query,
             cancellationToken);
 
-        if (result is null)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 
     [HttpPatch("{columnId:guid}")]
@@ -82,11 +88,11 @@ public class ColumnsController : ControllerBase
             columnId,
             request.Title);
 
-        var renamed = await _renameColumnHandler.HandleAsync(
+        var result = await _renameColumnHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!renamed)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
@@ -106,13 +112,18 @@ public class ColumnsController : ControllerBase
             columnId,
             request.Position);
 
-        var moved = await _moveColumnHandler.HandleAsync(
+        var result = await _moveColumnHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!moved)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
+        }
+
+        if (result.Status == ResultStatus.ValidationError)
+        {
+            return BadRequest();
         }
 
         return NoContent();
@@ -128,11 +139,11 @@ public class ColumnsController : ControllerBase
             boardId,
             columnId);
 
-        var deleted = await _deleteColumnHandler.HandleAsync(
+        var result = await _deleteColumnHandler.HandleAsync(
             command,
             cancellationToken);
 
-        if (!deleted)
+        if (result.Status == ResultStatus.NotFound)
         {
             return NotFound();
         }
